@@ -1,1 +1,1 @@
-# -EE326-Digital-Image-Processing
+# EE326-Digital-Image-Processing

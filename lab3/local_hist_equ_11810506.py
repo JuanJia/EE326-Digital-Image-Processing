@@ -2,28 +2,20 @@ from typing import io
 import numpy as np
 from skimage import io
 import matplotlib.pyplot as plt
+import time
 
-def hist_equ(part):
-    """ Histogram equalization of a grayscale image. """
-    input_img = part
-    r, c = input_img.shape
-    x = int((r - 1) / 2)
-    sum = 0
-    for i in range(int(input_img[x, x]+1)):
-        sum = sum +np.sum(input_img == i) / (r * c)
-    # get cumulative distribution function
-
-    return (255) * sum
 
 def part_img(input_img, m, n, m_size):
+    sums = 0
     step = int((m_size - 1) / 2)
-    part = np.zeros([m_size, m_size], dtype=np.uint8)
+    for i in range(m - step, m + step + 1):
+        for j in range(n - step, n + step + 1):
+            if 0 <= i < input_img.shape[0] and 0 <= j < input_img.shape[0]:
+                if input_img[i, j] <= input_img[m, n]:
+                    sums = sums + 1
 
-    for i in range(m - step, m + step):
-        for j in range(n - step, n + step):
-            if i >= 0 and i < input_img.shape[0] and j >= 0 and j < input_img.shape[0]:
-                part[i - (m - step), j - (n - step)] = input_img[i, j]
-    return part
+    return (255) * sums / (m_size * m_size)
+
 
 def local_hist_equ_11810506(input_image, m_size):
     input_img = io.imread(input_image)
@@ -37,10 +29,10 @@ def local_hist_equ_11810506(input_image, m_size):
         input_histogram.append(np.sum(input_img == i))
 
     # local histogram equalization
-    for i in range(0,r):
-        for j in range(0,c):
-            output_img[i, j] = hist_equ(part_img(input_img, i, j, m_size))
-            print(i,j)
+    for i in range(0, r):
+        for j in range(0, c):
+            output_img[i, j] = part_img(input_img, i, j, m_size)
+            # print(i, j)
     # Count output
 
     for i in range(256):
@@ -58,4 +50,8 @@ def local_hist_equ_11810506(input_image, m_size):
     return
 
 
-local_hist_equ_11810506("Q3_3.tif", 21)
+time_start = time.time()
+local_hist_equ_11810506("Q3_3.tif", 11)
+time_end = time.time()
+string = "totally cost %.2f s" % (time_end - time_start)
+print(string)

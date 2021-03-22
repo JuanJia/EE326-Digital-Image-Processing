@@ -65,9 +65,9 @@ def laplace_sharpen(input_image, c, choice):
     plt.title('output_image', fontsize=10)
     plt.imshow(output_image, cmap='gray')
     plt.savefig(name)
-    plt.show()
+    plt.close()
 
     return 0
 
 
-laplace_sharpen("Q4_2.tif", -1, 1)
+
